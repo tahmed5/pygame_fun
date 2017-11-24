@@ -1,0 +1,54 @@
+import pygame
+import time
+
+pygame.init()
+white = (255,255,255)
+gameloop = True
+board = pygame.display.set_mode((800,600))
+pygame.display.set_caption("Robot Game")
+pygame_events = pygame.event.get()
+
+fps = pygame.time.Clock()
+
+frame1 = pygame.image.load("mario1.png")
+frame2 = pygame.image.load("mario2.png")
+frame3 = pygame.image.load("mario3.png")
+frame4 = pygame.image.load("mario4.png")
+frame5 = pygame.image.load("mario5.png")
+frame6 = pygame.image.load("mario6.png")
+frame7 = pygame.image.load("mario7.png")
+frame8 = pygame.image.load("mario8.png")
+
+current_frame = 0
+
+while gameloop == True:
+    time.sleep(0.1)
+    for event in pygame_events:
+        if (event.type == pygame.QUIT):
+            gameloop = False
+    board.fill(white)
+    if current_frame == 0:
+        board.blit(frame1,(10,10))
+    if current_frame == 1:
+        board.blit(frame2,(10,10))
+    if current_frame == 2:
+        board.blit(frame3,(10,10))
+    if current_frame == 3:
+        board.blit(frame4,(10,10))
+    if current_frame == 4:
+        board.blit(frame5,(10,10))
+    if current_frame == 5:
+        board.blit(frame6,(10,10))
+    if current_frame == 6:
+        board.blit(frame7,(10,10))
+    if current_frame == 7:
+        board.blit(frame8,(10,10))
+    if current_frame == 7:
+        current_frame = 0
+    else:
+        current_frame += 1
+
+    pygame.display.flip()
+    fps.tick(30)
+
+pygame.quit()
