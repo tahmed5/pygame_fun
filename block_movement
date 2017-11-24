@@ -1,0 +1,57 @@
+import pygame
+pygame.init()
+black = (0,0,0)
+white = (255,255,255)
+gameloop = True
+board = pygame.display.set_mode((800,600))
+pygame.display.set_caption("Robot Game")
+
+class User:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+        self.width = 50
+        self.height = 50
+
+    def draw(self):
+        self.x += smoothx
+        self.y += smoothy
+        pygame.draw.rect(board,white,(self.x,self.y,self.width,self.height))
+        
+smoothx,smoothy = 0,0
+fps = pygame.time.Clock()
+
+player = User(0,0)
+
+while gameloop == True:
+    fps.tick(30)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                smoothy -= 5
+            if event.key == pygame.K_DOWN:
+                smoothy += 5
+            if event.key == pygame.K_LEFT:
+                smoothx -= 5
+            if event.key == pygame.K_RIGHT:
+                smoothx += 5
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_UP:
+                smoothy = 0
+            if event.key == pygame.K_DOWN:
+                smoothy = 0 
+            if event.key == pygame.K_LEFT:
+                smoothx = 0
+            if event.key == pygame.K_RIGHT:
+                smoothx = 0
+                
+    board.fill(black)           
+    player.draw()
+                
+    pygame.display.flip()
+
+pygame.quit()
+            
