@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+import time
 
 width,height = 800,600
 pygame.init()
@@ -13,8 +14,9 @@ board = pygame.display.set_mode((width,height)) #Creates the board
 pygame.display.set_caption("Robot Game") #Used to set the title of the board window
 smoothx,smoothy = 0,0 # SmoothX and SmoothY will be added to the player coordinates to allow constant motion when a user clicks one of the arrow keys
 fps = pygame.time.Clock() #A pygame function that is used to control the amount of cycles per second
-level = 0
+level = 1
 scoreboard = 0
+num_scrap = 0
 
 
 class user:    
@@ -47,10 +49,9 @@ class user:
         #This will send each bot to the remove_bots method in the robot class
         for bot in bots:
             robot.remove_bots(bot)
-        player.x, player.y =int(width/2),int(height/2) #updates the player position back to the centre
         if self.lives == 0:
             gameloop = False #Stop the gameloop if the user no longer has any lives
-        
+        lives_remaining()        
         
         
 
@@ -58,19 +59,21 @@ player = user(int(width/2),int(height/2)) #Creates a user instance
 
 class robot:
     def __init__(self):
+        self.id = 'robot'
         #x and y are randomly generated
         x = list(range(0, width))
         y = list(range(0,height))
-        #A safe radius of 37.5 is formed by removing the values in that radius from x and y
-        for i in range(75):
-            x.pop(int((width/2)) - i)
-            x.pop(int((width/2)) + i)
-        for i in range(75):
-            y.pop(int((height/2)) - i)
-            y.pop(int((height/2)) + i)           
-        self.x = random.choice(x) #x is assigned from outside the safe radius
+        safe_x = []
+        safe_y = []
+        for number in x:
+            if number not in range(300,600):
+                safe_x.append(number)
+        for number in y:
+            if number not in range(150,450):
+                safe_y.append(number)
+        self.x = random.choice(safe_x) #x is assigned from outside the safe radius)
         self.colour = red # Sets the colours of bots to red        
-        self.y = random.choice(y)#y is assigned from outside the safe radius
+        self.y = random.choice(safe_y)#y is assigned from outside the safe radius
         self.ground = False # Ground is used to make a bot stationary when it turns into a scrap pile
         self.width = 10
         self.height = 10
@@ -78,7 +81,7 @@ class robot:
     def draw_bots(self):
         #Displays the bots
         pygame.draw.rect(board,self.colour,(self.x,self.y,self.width,self.height))
-        
+    
     def remove_bots(self):
         #Removes the bots when the player collides with a robot and then it calls the function generate_bots to replace them with new ones
         del bots[:]
@@ -106,11 +109,13 @@ class robot:
                 self.y -= 2
                 
     def scrap_pile(self,other):
+        global num_scrap
         self.ground = True #Makes the bot stationary
         self.colour = blue #Makes the scrap pile blue
         if other in bots:
             bots.remove(other)  #Removes one of the bots when two collide together so one scrap pile is created     
         pygame.draw.rect(board,blue,(self.x,self.y,self.width,self.height)) #Outputs the scrap pile
+        self.id = 'scrap'
 
         
 class collision:
@@ -144,23 +149,28 @@ class collision:
             collision_detected = True
         if collision_detected == True:
             user.lives(self)
-                 
+
 def generate_bots():
+    player.x, player.y =int(width/2),int(height/2) #updates the player position back to the centre 
     global bots
-    if level == 0:
-        bots = [robot() for x in range(5)] #Creates 5 bot instances when level is 0
     if level == 1:
+        bots = [robot() for x in range(5)] #Creates 5 bot instances when level is 0
+    if level == 2:
         bots = [robot() for x in range(10)] #Creates 10 bot instances when level is 1
+    if level == 3:
+        bots = [robot() for x in range(15)] #Creates 10 bot instances when level is 1
+    if level == 4:
+        bots = [robot() for x in range(20)] #Creates 10 bot instances when level is 1
 
 
 generate_bots()
 
-scorefont = pygame.font.SysFont('Verdana', 15) #Assigns the font verdana when displaying the score
-livesfont = pygame.font.SysFont('Verdana', 15) #Assigns the font verdana when displaying the lives
+font = pygame.font.SysFont('Verdana', 15) #Assigns the font verdana when displaying the score
+
 
 def score(score):
     #Displays the Score
-    text = scorefont.render('Score: ' + str(score), True, white)
+    text = font.render('Score: ' + str(score), True, white)
     board.blit(text, [0,0])
 
 def save_score():
@@ -169,10 +179,34 @@ def save_score():
 
 def display_lives():
     #Displays the Lives
-    text = livesfont.render('Lives: ' + str(player.lives), True, white)
+    text = font.render('Lives: ' + str(player.lives), True, white)
     board.blit(text, [0, 15])
+
+countdownfont = pygame.font.SysFont('Verdana', 15)
+
+def countdown():
+    for x in range(3, 0, -1):
+        board.fill(black)
+        text = countdownfont.render('Level ' + str(level), True, white)
+        numbers = countdownfont.render('Starting In ' + str(x), True, white)
+        board.blit(text, [width/2- 50, height/2 - 50])
+        board.blit(numbers, [width/2- 70, height/2 - 25])
+        pygame.display.flip()        
+        time.sleep(1)
+
+def lives_remaining():
+    board.fill(black)
+    text = font.render('Lives Remaining: ' + str(player.lives), True, white)
+    board.blit(text, [width/2- 90, height/2 - 50])
+    pygame.display.flip()        
+    time.sleep(3)
+
+countdown()        
+    
+    
 #MAIN GAME LOOP
 while gameloop == True:
+    num_scraps = 0
     fps.tick(60) #Sets FPS to 60
     for event in pygame.event.get(): #Checks each event
         if event.type == pygame.QUIT: #If one of the events are quit (when the user clicks the X in the top right corner) the window closes
@@ -211,7 +245,13 @@ while gameloop == True:
     scoreboard += 1 #Adds one to the scoreboard each time
     score(scoreboard)
     display_lives()
-    
+    for bot in bots:
+        if bot.id == 'scrap':
+            num_scraps += 1
+    if num_scraps == len(bots):
+        level += 1
+        generate_bots()
+        countdown()
                 
     player.draw()
     pygame.display.update()
