@@ -177,6 +177,11 @@ def save_score():
     pass
 
 def display_lives():
+    global gameloop
+    if player.lives == 0:
+        gameloop = False
+        pygame.quit()
+        quit()
     #Displays the Lives
     text = smallfont.render('Lives: ' + str(player.lives), True, white)
     board.blit(text, [0, 15])
