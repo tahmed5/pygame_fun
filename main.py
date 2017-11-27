@@ -198,7 +198,6 @@ def countdown():
         board.blit(numbers, [width/2- 75, height/2])        
         pygame.display.flip()        
         time.sleep(1)
-    print('c')
 
 def lives_remaining():
     board.fill(black)
