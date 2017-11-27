@@ -1,4 +1,13 @@
-Start
-126,448
-Quit
-502,448
+START
+
+TL = 126,448
+BR = 298,517
+width = 172
+height = 69
+
+QUIT
+
+TL = 502,448
+BR = 676,517
+width = 174
+height = 69
