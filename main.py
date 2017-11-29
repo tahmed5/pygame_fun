@@ -75,8 +75,17 @@ class robot:
         for number in y:
             if number not in range(150,450):
                 safe_y.append(number)
-        self.x = random.choice(safe_x) #x is assigned from outside the safe radius)  
-        self.y = random.choice(safe_y)#y is assigned from outside the safe radius            
+        self.x = random.choice(safe_x) #x is assigned from outside the safe radius
+        self.y = random.choice(safe_y)#y is assigned from outside the safe radius
+        for i in range(10):
+            try:
+                safe_x.remove(self.x + i)
+                safe_x.remove(self.x - i)
+                safe_y.remove(self.y + i)
+                safe_y.remove(self.y - i)
+            except ValueError:
+                pass
+
         self.colour = red # Sets the colours of bots to red      
         self.ground = False # Ground is used to make a bot stationary when it turns into a scrap pile
         self.width = 10
@@ -160,11 +169,15 @@ def generate_bots():
     if level == 1:
         bots = [robot() for x in range(5)] #Creates 5 bot instances when level is 1
     if level == 2:
-        bots = [robot() for x in range(10)] #Creates 10 bot instances when level is 2
+        bots = [robot() for x in range(5)] #Creates 10 bot instances when level is 2
     if level == 3:
-        bots = [robot() for x in range(15)] #Creates 10 bot instances when level is 3
+        bots = [robot() for x in range(5)] #Creates 10 bot instances when level is 3
     if level == 4:
-        bots = [robot() for x in range(20)] #Creates 10 bot instances when level is 4
+        bots = [robot() for x in range(5)] #Creates 10 bot instances when level is 4
+    if level == 5:
+        bots = [robot() for x in range(5)]
+    if level > 5:
+        winning_screen()
 
 
 def score(score):
@@ -231,6 +244,14 @@ def start_menu():
         board.blit(start_button,(125,448))
         board.blit(quit_button,(502,448))
         pygame.display.update()
+
+def winning_screen():
+    text = smallfont.render('Congratulations, You Have Won', True,white)
+    scoretext = smallfont.render('With A Score Of:' + str(scoreboard), True, white)
+    board.blit(text, [width/2- 90, height/2 - 50])
+    board.blit(scoretext, [width/2 - 90, height/2])
+    pygame.display.update()
+    time.sleep(15)
 
         
 player = user(int(width/2),int(height/2))    
