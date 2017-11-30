@@ -167,16 +167,18 @@ def generate_bots():
     player.x, player.y =int(width/2),int(height/2) #updates the player position back to the centre 
     global bots
     if level == 1:
-        bots = [robot() for x in range(5)] #Creates 5 bot instances when level is 1
+        bots = [robot() for x in range(3)] #Creates 5 bot instances when level is 1
     if level == 2:
-        bots = [robot() for x in range(5)] #Creates 10 bot instances when level is 2
-    if level == 3:
-        bots = [robot() for x in range(5)] #Creates 10 bot instances when level is 3
-    if level == 4:
-        bots = [robot() for x in range(5)] #Creates 10 bot instances when level is 4
-    if level == 5:
         bots = [robot() for x in range(5)]
-    if level > 5:
+    if level == 3:
+        bots = [robot() for x in range(7)] #Creates 10 bot instances when level is 2
+    if level == 4:
+        bots = [robot() for x in range(11)] #Creates 10 bot instances when level is 3
+    if level == 5:
+        bots = [robot() for x in range(13)] #Creates 10 bot instances when level is 4
+    if level == 6:
+        bots = [robot() for x in range(15)]
+    if level > 7:
         winning_screen()
 
 
@@ -246,10 +248,11 @@ def start_menu():
         pygame.display.update()
 
 def winning_screen():
+    board.fill(black)
     text = smallfont.render('Congratulations, You Have Won', True,white)
-    scoretext = smallfont.render('With A Score Of:' + str(scoreboard), True, white)
+    scoretext = smallfont.render('With a Score Of:' + str(scoreboard) + ' ', True, white)
     board.blit(text, [width/2- 90, height/2 - 50])
-    board.blit(scoretext, [width/2 - 90, height/2])
+    board.blit(scoretext, [width/2-50, height/2 - 30])
     pygame.display.update()
     time.sleep(15)
 
