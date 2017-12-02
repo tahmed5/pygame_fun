@@ -18,9 +18,11 @@ level = 1
 scoreboard = 0
 num_scrap = 0
 smallfont = pygame.font.SysFont('Verdana', 15) #Assigns the font verdana when displaying the score
+largefont = pygame.font.SysFont('Verdana', 40)
 background = pygame.image.load("RunBackground.jpg")
 start_button = pygame.image.load("RunStartButton.png")
 quit_button = pygame.image.load("RunQuitButton.png")
+scorebackground = pygame.image.load("scorebackground.jpg")
 menu = True
 
 
@@ -178,7 +180,7 @@ def generate_bots():
         bots = [robot() for x in range(13)] #Creates 10 bot instances when level is 4
     if level == 6:
         bots = [robot() for x in range(15)]
-    if level > 7:
+    if level > 6:
         winning_screen()
 
 
@@ -247,20 +249,21 @@ def start_menu():
         board.blit(quit_button,(502,448))
         pygame.display.update()
 
-def winning_screen():
-    board.fill(black)
-    text = smallfont.render('Congratulations, You Have Won', True,white)
-    scoretext = smallfont.render('With a Score Of:' + str(scoreboard) + ' ', True, white)
-    board.blit(text, [width/2- 90, height/2 - 50])
-    board.blit(scoretext, [width/2-50, height/2 - 30])
-    pygame.display.update()
-    time.sleep(15)
 
         
 player = user(int(width/2),int(height/2))    
 start_menu()
 
-
+def winning_screen():
+    global gameloop
+    global fps
+    gameloop = False
+    scoretext = largefont.render(str(scoreboard), True, white)
+    board.blit(scorebackground, [0,0])
+    board.blit(scoretext, [width/2-50, height/2 - 5])
+    pygame.display.update()
+    time.sleep(5)
+    pygame.quit()
     
 #MAIN GAME LOOP
 while gameloop == True:
@@ -269,26 +272,25 @@ while gameloop == True:
     for event in pygame.event.get(): #Checks each event
         if event.type == pygame.QUIT: #If one of the events are quit (when the user clicks the X in the top right corner) the window closes
             pygame.quit()
-        if event.type == pygame.KEYDOWN: #Checks for a keypress
-            if event.key == pygame.K_UP:
-                smoothy -= 5 #reduces the y by 5 so player moves up
-            if event.key == pygame.K_DOWN:
-                smoothy += 5 #increases the y by 5 so player moves down
-            if event.key == pygame.K_LEFT:
-                smoothx -= 5 #reduces the x by 5 so player moves left
-            if event.key == pygame.K_RIGHT:
-                smoothx += 5 #increases the x by 5 so player moves right
-
-        if event.type == pygame.KEYUP:
-            #If the user stop pressing one of the arrow keys it sets all the smooth values to 0 so it stops increasing the x or y coordinate
-            if event.key == pygame.K_UP:
+        if event.type == pygame.KEYDOWN:
+            if  event.key == pygame.K_w:
+                smoothy = -5
+            elif  event.key == pygame.K_s:
+                smoothy = 5
+            elif  event.key == pygame.K_a:
+                smoothx = -5
+            elif  event.key == pygame.K_d:
+                smoothx = 5
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_w and smoothy < 0:
                 smoothy = 0
-            if event.key == pygame.K_DOWN:
-                smoothy = 0 
-            if event.key == pygame.K_LEFT:
+            elif event.key == pygame.K_s and smoothy > 0:
+                smoothy = 0
+            elif event.key == pygame.K_a and smoothx < 0:
                 smoothx = 0
-            if event.key == pygame.K_RIGHT:
-                smoothx = 0
+            elif event.key ==pygame.K_d and smoothx > 0:
+                smoothx = 0                  
+                
         
     board.fill(black) #Fills the board with black
     for bot in bots:
