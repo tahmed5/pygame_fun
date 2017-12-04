@@ -3,6 +3,8 @@ import random
 import sys
 import time
 
+round_score = 0
+timer = 0
 collision_detected = False
 width,height = 800,600
 pygame.init()
@@ -106,6 +108,9 @@ class robot:
     def pathfinding(self):
         #Compares the x values and y values with the player and moves towards it accordingly
         #E.G playerx = 5 botx = 2 if playerx > botx botx +=1
+        speed = 3
+        if timer > 1000:
+            speed = 5
         if self.x <= 0:
             self.x = 0 + (self.width/2)
         if self.x >= width - self.width:
@@ -116,13 +121,13 @@ class robot:
             self.y = height - (self.height)   
         if self.ground != True:
             if player.x > self.x:
-                self.x += 3
+                self.x += speed
             if player.x < self.x:
-                self.x -= 3
+                self.x -= speed
             if player.y > self.y:
-                self.y += 3
+                self.y += speed
             if player.y < self.y:
-                self.y -= 3
+                self.y -= speed
                 
     def scrap_pile(self,other):
         global num_scrap
@@ -150,26 +155,27 @@ class collision:
         if other.x + other.width >= self.x + self.width>= other.x and other.y + other.height >= self.y  + self.height >= other.y:
             collision_detected = True
         if collision_detected == True:
-            score(50)
             robot.scrap_pile(self,other)
             
     def user_collision_detection(self, other):
         #checks each region of the bot to see if it collided with another bot
-        u_collision_detected = False
+        collision_detected = False
         if other.x + other.width >= self.x >= other.x and other.y + other.height >= self.y >= other.y:
-            u_collision_detected = True
+            collision_detected = True
         if other.x + other.width >= self.x + self.width >= other.x and other.y + other.height >= self.y >= other.y:
-            u_collision_detected = True
+            collision_detected = True
         if other.x + other.width >= self.x >= other.x and other.y + other.height >= self.y + self.height >= other.y:
-            u_collision_detected = True
+            collision_detected = True
         if other.x + other.width >= self.x + self.width>= other.x and other.y + other.height >= self.y  + self.height >= other.y:
-            u_collision_detected = True
-        if u_collision_detected == True:
+            collision_detected = True
+        if collision_detected == True:
             user.lives(self)
 
 def generate_bots():
-    player.x, player.y =int(width/2),int(height/2) #updates the player position back to the centre 
+    player.x, player.y =int(width/2),int(height/2) #updates the player position back to the centre
     global bots
+    global timer
+    timer = 0
     if level == 1:
         bots = [robot() for x in range(3)] #Creates 5 bot instances when level is 1
     if level == 2:
@@ -207,6 +213,8 @@ def display_lives():
 
 
 def countdown():
+    global round_score
+    round_score = scoreboard
     for x in range(3, 0, -1):
         board.fill(black)
         text = smallfont.render('Level ' + str(level), True, white)
@@ -219,6 +227,9 @@ def countdown():
         time.sleep(1)
 
 def lives_remaining():
+    global scoreboard
+    global round_score
+    scoreboard = round_score
     board.fill(black)
     text = smallfont.render('Lives Remaining: ' + str(player.lives), True, white)
     board.blit(text, [width/2- 90, height/2 - 50])
@@ -228,6 +239,9 @@ def lives_remaining():
 def create_environment():
     generate_bots()
     countdown()
+
+def super_charge():
+    pass
 
 def start_menu():
     global menu
@@ -269,6 +283,7 @@ def winning_screen():
 #MAIN GAME LOOP
 while gameloop == True:
     num_scraps = 0
+    super_charge()
     fps.tick(60) #Sets FPS to 60
     for event in pygame.event.get(): #Checks each event
         if event.type == pygame.QUIT: #If one of the events are quit (when the user clicks the X in the top right corner) the window closes
@@ -315,7 +330,8 @@ while gameloop == True:
         level += 1
         generate_bots()
         countdown()
-                
+    timer += 1
+    print(fps)
     player.draw()
     pygame.display.update()
 
