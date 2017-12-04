@@ -3,6 +3,7 @@ import random
 import sys
 import time
 
+collision_detected = False
 width,height = 800,600
 pygame.init()
 black = (0,0,0)
@@ -149,20 +150,21 @@ class collision:
         if other.x + other.width >= self.x + self.width>= other.x and other.y + other.height >= self.y  + self.height >= other.y:
             collision_detected = True
         if collision_detected == True:
+            score(50)
             robot.scrap_pile(self,other)
             
     def user_collision_detection(self, other):
         #checks each region of the bot to see if it collided with another bot
-        collision_detected = False
+        u_collision_detected = False
         if other.x + other.width >= self.x >= other.x and other.y + other.height >= self.y >= other.y:
-            collision_detected = True
+            u_collision_detected = True
         if other.x + other.width >= self.x + self.width >= other.x and other.y + other.height >= self.y >= other.y:
-            collision_detected = True
+            u_collision_detected = True
         if other.x + other.width >= self.x >= other.x and other.y + other.height >= self.y + self.height >= other.y:
-            collision_detected = True
+            u_collision_detected = True
         if other.x + other.width >= self.x + self.width>= other.x and other.y + other.height >= self.y  + self.height >= other.y:
-            collision_detected = True
-        if collision_detected == True:
+            u_collision_detected = True
+        if u_collision_detected == True:
             user.lives(self)
 
 def generate_bots():
@@ -250,7 +252,6 @@ def start_menu():
         pygame.display.update()
 
 
-        
 player = user(int(width/2),int(height/2))    
 start_menu()
 
@@ -302,6 +303,8 @@ while gameloop == True:
             if bot != x:
                 collision.bot_collision_detection(bot,x)
                 collision.user_collision_detection(player,x)
+    if collision_detected == True:
+        print('rip')
     scoreboard += 1 #Adds one to the scoreboard each time
     score(scoreboard)
     display_lives()
