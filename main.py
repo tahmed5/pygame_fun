@@ -240,8 +240,9 @@ def create_environment():
     generate_bots()
     countdown()
 
-def super_charge():
-    pass
+def super_charge_bar():
+    text = smallfont.render('Super Charge', True, white)
+    board.blit(text,[width/2 - 75, 0])
 
 def start_menu():
     global menu
@@ -283,7 +284,7 @@ def winning_screen():
 #MAIN GAME LOOP
 while gameloop == True:
     num_scraps = 0
-    super_charge()
+
     fps.tick(60) #Sets FPS to 60
     for event in pygame.event.get(): #Checks each event
         if event.type == pygame.QUIT: #If one of the events are quit (when the user clicks the X in the top right corner) the window closes
@@ -331,8 +332,8 @@ while gameloop == True:
         generate_bots()
         countdown()
     timer += 1
-    print(fps)
     player.draw()
+    super_charge_bar()
     pygame.display.update()
 
 print('Thank You For Playing')
