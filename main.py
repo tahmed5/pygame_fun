@@ -12,9 +12,14 @@ black = (0,0,0)
 white = (255,255,255)
 blue = (0,0,255)
 red = (255,0,0)
+yellow = (255,230,0)
+yellow2 = (255,188,0)
+orange = (255,128,0)
+orange2 = (255,77,0)
+
 gameloop = True
 board = pygame.display.set_mode((width,height)) #Creates the board
-pygame.display.set_caption("Robot Game") #Used to set the title of the board window
+pygame.display.set_caption("Run") #Used to set the title of the board window
 smoothx,smoothy = 0,0 # SmoothX and SmoothY will be added to the player coordinates to allow constant motion when a user clicks one of the arrow keys
 fps = pygame.time.Clock() #A pygame function that is used to control the amount of cycles per second
 level = 1
@@ -26,13 +31,14 @@ background = pygame.image.load("RunBackground.jpg")
 start_button = pygame.image.load("RunStartButton.png")
 quit_button = pygame.image.load("RunQuitButton.png")
 scorebackground = pygame.image.load("scorebackground.jpg")
+superchargetext = pygame.image.load("supercharge.png")
 menu = True
 
 
 class user:    
     def __init__(self,x,y):
         self.type = 'player'
-        self.lives = 3 #Amount of lives the user has 
+        self.lives = 5 #Amount of lives the user has 
         self.x = x #Players x coordinate
         self.y = y #Players y coordinate
         self.width = 10 #Player Sprite Width
@@ -75,10 +81,10 @@ class robot:
         safe_x = []
         safe_y = []
         for number in x:
-            if number not in range(300,600):
+            if number not in range(275,525):
                 safe_x.append(number)
         for number in y:
-            if number not in range(150,450):
+            if number not in range(175,425):
                 safe_y.append(number)
         self.x = random.choice(safe_x) #x is assigned from outside the safe radius
         self.y = random.choice(safe_y)#y is assigned from outside the safe radius
@@ -241,8 +247,19 @@ def create_environment():
     countdown()
 
 def super_charge_bar():
-    text = smallfont.render('Super Charge', True, white)
-    board.blit(text,[width/2 - 75, 0])
+    board.blit(superchargetext,[width/2 - 52, 0])
+    bar_width = 0.14 * timer
+    if timer < 500:
+        pygame.draw.rect(board,yellow,(325,20,bar_width,10))
+    if timer >= 500 and timer < 750:
+        pygame.draw.rect(board,yellow2,(325,20,bar_width,10))
+    if timer >= 750 and timer < 875:
+        pygame.draw.rect(board,orange,(325,20,bar_width,10))
+    if timer >= 875 and timer < 1000:
+        pygame.draw.rect(board,orange2,(325,20,bar_width,10))
+    if timer >= 1000:
+        pygame.draw.rect(board,red,(325,20,140,10))        
+        
 
 def start_menu():
     global menu
@@ -274,7 +291,9 @@ def winning_screen():
     global gameloop
     global fps
     gameloop = False
-    scoretext = largefont.render(str(scoreboard), True, white)
+    score_display = scoreboard
+    score_display = score_display + (player.lives * 500)
+    scoretext = largefont.render(str(score_display), True, white)
     board.blit(scorebackground, [0,0])
     board.blit(scoretext, [width/2-50, height/2 - 5])
     pygame.display.update()
