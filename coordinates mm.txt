@@ -1,0 +1,15 @@
+pacman
+TL = 228,55
+BR = 580, 115
+
+tetris
+TL = 228,171
+BR = 580,275
+
+run
+TL = 228,305
+BR = 580,410
+
+spaceinvaders 
+TL = 228,427
+BR = 580,545
