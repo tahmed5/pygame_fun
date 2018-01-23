@@ -1,5 +1,6 @@
 import pygame
 import os
+import subprocess
 
 width, height = 800,600
 pygame.init()
@@ -12,9 +13,9 @@ MainMenu = pygame.image.load('MainMenu.jpg')
 def pacman():
     print('Pacman')
 
-def run():
-    os.system('main.py')
-    pass
+def run():   
+    subprocess.call('main.py', shell = True)
+    '''os.system('main.py')'''
 
 def space_invaders():
     print('SpaceInvaders')
