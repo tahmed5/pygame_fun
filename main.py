@@ -2,6 +2,10 @@ import pygame
 import random
 import sys
 import time
+import os
+import profile
+
+username = os.getlogin()
 
 round_score = 0
 timer = 0
@@ -38,7 +42,7 @@ menu = True
 class user:    
     def __init__(self,x,y):
         self.type = 'player'
-        self.lives = 5 #Amount of lives the user has 
+        self.lives = 1 #Amount of lives the user has 
         self.x = x #Players x coordinate
         self.y = y #Players y coordinate
         self.width = 10 #Player Sprite Width
@@ -203,19 +207,13 @@ def score(score):
     text = smallfont.render('Score: ' + str(score), True, white)
     board.blit(text, [0,0])
 
-def save_score():
-    #Write a file into the student shared area with their username and score   
-    pass
-
 def display_lives():
-    global gameloop
     if player.lives == 0:
-        gameloop = False
-        pygame.quit()
-        quit()
+        winning_screen()
     #Displays the Lives
-    text = smallfont.render('Lives: ' + str(player.lives), True, white)
-    board.blit(text, [0, 15])
+    else:
+        text = smallfont.render('Lives: ' + str(player.lives), True, white)
+        board.blit(text, [0, 15])
 
 
 def countdown():
@@ -294,11 +292,21 @@ def winning_screen():
     score_display = scoreboard
     score_display = score_display + (player.lives * 500)
     scoretext = largefont.render(str(score_display), True, white)
+    x_shift = len(str(score_display)) * 11.5
     board.blit(scorebackground, [0,0])
-    board.blit(scoretext, [width/2-50, height/2 - 5])
+    board.blit(scoretext, [width/2- x_shift, height/2])    
     pygame.display.update()
     time.sleep(5)
+    save(score_display)
     pygame.quit()
+
+
+def save(score_display):
+    user_profile = profile.User_Profile(username)
+    user_profile.update_score(score_display)
+    user_profile.add_game_record('Run')
+    user_profile.save()
+
     
 #MAIN GAME LOOP
 while gameloop == True:
@@ -338,8 +346,6 @@ while gameloop == True:
             if bot != x:
                 collision.bot_collision_detection(bot,x)
                 collision.user_collision_detection(player,x)
-    if collision_detected == True:
-        print('rip')
     scoreboard += 1 #Adds one to the scoreboard each time
     score(scoreboard)
     display_lives()
@@ -355,7 +361,5 @@ while gameloop == True:
     super_charge_bar()
     pygame.display.update()
 
-print('Thank You For Playing')
-save_score()
 pygame.quit()
 quit()           
