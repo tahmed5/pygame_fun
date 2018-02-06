@@ -3,13 +3,12 @@ import random
 import sys
 import time
 import os
-import profile
+'''import profile'''
 
 username = os.getlogin()
 
 round_score = 0
 timer = 0
-collision_detected = False
 width,height = 800,600
 pygame.init()
 black = (0,0,0)
@@ -21,6 +20,7 @@ yellow2 = (255,188,0)
 orange = (255,128,0)
 orange2 = (255,77,0)
 
+collision_detected = False
 gameloop = True
 board = pygame.display.set_mode((width,height)) #Creates the board
 pygame.display.set_caption("Run") #Used to set the title of the board window
@@ -42,7 +42,7 @@ menu = True
 class user:    
     def __init__(self,x,y):
         self.type = 'player'
-        self.lives = 1 #Amount of lives the user has 
+        self.lives = 5 #Amount of lives the user has 
         self.x = x #Players x coordinate
         self.y = y #Players y coordinate
         self.width = 10 #Player Sprite Width
@@ -296,8 +296,10 @@ def winning_screen():
     board.blit(scorebackground, [0,0])
     board.blit(scoretext, [width/2- x_shift, height/2])    
     pygame.display.update()
-    time.sleep(5)
     save(score_display)
+    time.sleep(5)
+    pygame.display.quit()
+    sys.exit()
     pygame.quit()
 
 
@@ -313,6 +315,7 @@ while gameloop == True:
     num_scraps = 0
 
     fps.tick(60) #Sets FPS to 60
+    
     for event in pygame.event.get(): #Checks each event
         if event.type == pygame.QUIT: #If one of the events are quit (when the user clicks the X in the top right corner) the window closes
             pygame.quit()

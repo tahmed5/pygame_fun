@@ -1,7 +1,9 @@
+import PyInstaller
 import pygame
 import os
 import subprocess
-import profile
+'''import profile'''
+import importlib.util
 
 width, height = 1000,800
 pygame.init()
@@ -28,7 +30,7 @@ import getpass #to get the user's name
 #ADDED
 #function to recieve the file on the other end, needs an input of the game name ("pacman","tetris")
 #FUNCTION TAKES LOWER CASE NAMES
-'''
+
 def reciever(game):
     username = (getpass.getuser()).lower() #I found an issue where if the user logs in with caps enabled, the username will be all caps in program. Not a big deal but may as well solve it.
     user_profile = profile.User_Profile(username) #getting user profile
@@ -42,26 +44,28 @@ def reciever(game):
         user_profile.update_score(x[0])# updating the score
         user_profile.add_game_record(game)
         user_profile.save()
-'''       
+     
     
 
 def pacman():
-    '''reciever('pacman')'''
-    pass
+    reciever('pacman')
     
 
-def run():   
-    subprocess.call('main.py', shell = True)
+def run():
+    spec = importlib.util.spec_from_file_location("main.py", "Z:\My Documents\Sixth Form\Computer Science\main.py")
+    foo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(foo)
+    foo.MyClass()
+    '''subprocess.call('main.py', shell = True)'''
     '''os.system('main.py')'''
 
 def space_invaders():
     print('SpaceInvaders')
-    pass
 
 def tetris():
-    print('tetris')
-    '''reciever('tetris')'''
-    pass
+    subprocess.call('main.py', shell = True)
+    reciever('tetris')
+
 
 def snake():
     pass
